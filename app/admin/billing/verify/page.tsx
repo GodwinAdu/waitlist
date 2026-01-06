@@ -1,12 +1,12 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, Suspense } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { CheckCircle, XCircle, Loader2 } from "lucide-react"
 
-export default function VerifySubscriptionPage() {
+function VerifyContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [status, setStatus] = useState<"loading" | "success" | "error">("loading")
@@ -67,5 +67,13 @@ export default function VerifySubscriptionPage() {
         </CardContent>
       </Card>
     </div>
+  )
+}
+
+export default function VerifySubscriptionPage() {
+  return (
+    <Suspense fallback={<div className="flex min-h-screen items-center justify-center"><Loader2 className="h-8 w-8 animate-spin" /></div>}>
+      <VerifyContent />
+    </Suspense>
   )
 }
