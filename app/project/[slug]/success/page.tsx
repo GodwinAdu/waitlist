@@ -1,11 +1,12 @@
 "use client"
+
+import { useState, useEffect } from "react"
 import { notFound } from "next/navigation"
-import Project from "@/models/Project"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import Link from "next/link"
 import { AchievementBadges } from "@/components/gamification/achievement-badget"
-import { connectToDB } from "@/lib/mongoose"
+import { CopyButton } from "@/components/copy-button"
 
 const TIER_COLORS = {
   bronze: "#cd7f32",
@@ -32,16 +33,53 @@ interface SuccessPageProps {
   }>
 }
 
-export default async function SuccessPage({ params, searchParams }: SuccessPageProps) {
-  const { slug } = await params
-  const { position, referralCode, tier, points, badges } = await searchParams
+export default function SuccessPage({ params, searchParams }: SuccessPageProps) {
+  const [project, setProject] = useState<any>(null)
+  const [loading, setLoading] = useState(true)
+  const [slug, setSlug] = useState<string>("")
+  const [urlParams, setUrlParams] = useState<any>({})
 
-  await connectToDB()
-  const project = await Project.findOne({ slug, isActive: true }).lean()
+  useEffect(() => {
+    const getParams = async () => {
+      const { slug: slugParam } = await params
+      const searchParamsData = await searchParams
+      setSlug(slugParam)
+      setUrlParams(searchParamsData)
+      
+      try {
+        const response = await fetch(`/api/projects/slug/${slugParam}`)
+        if (!response.ok) {
+          notFound()
+          return
+        }
+        const data = await response.json()
+        setProject(data.project)
+      } catch (error) {
+        console.error("Failed to fetch project:", error)
+        notFound()
+      } finally {
+        setLoading(false)
+      }
+    }
+    getParams()
+  }, [params, searchParams])
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-muted to-background py-20 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+          <p>Loading...</p>
+        </div>
+      </div>
+    )
+  }
 
   if (!project) {
     notFound()
   }
+
+  const { position, referralCode, tier, points, badges } = urlParams
 
   const badgesList = badges ? badges.split(",") : []
   const shareUrl = `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/project/${slug}?ref=${referralCode}`
@@ -106,16 +144,7 @@ export default async function SuccessPage({ params, searchParams }: SuccessPageP
                 </div>
 
                 <div className="flex flex-col gap-2 sm:flex-row">
-                  <Button
-                    asChild
-                    className="flex-1"
-                    style={{ backgroundColor: project.primaryColor }}
-                    onClick={() => {
-                      navigator.clipboard.writeText(shareUrl)
-                    }}
-                  >
-                    <button type="button">Copy Link</button>
-                  </Button>
+                  <CopyButton shareUrl={shareUrl} primaryColor={project.primaryColor} />
                   <Button asChild variant="outline" className="flex-1 bg-transparent">
                     <a
                       href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`}
