@@ -1,0 +1,27 @@
+actions/waitlist.actions.ts(61,45): error TS2769: No overload matches this call.
+  Overload 1 of 5, '(docs: { projectId?: ObjectIdQueryTypeCasting | undefined; name?: StringQueryTypeCasting | undefined; email?: StringQueryTypeCasting | undefined; ... 78 more ...; validateSync?: { ...; } | undefined; }[], options?: CreateOptions | undefined): Promise<...>', gave the following error.
+    Object literal may only specify known properties, and 'projectId' does not exist in type '{ projectId?: ObjectIdQueryTypeCasting | undefined; name?: StringQueryTypeCasting | undefined; email?: StringQueryTypeCasting | undefined; ... 78 more ...; validateSync?: { ...; } | undefined; }[]'.
+  Overload 2 of 5, '(doc: { projectId?: ObjectIdQueryTypeCasting | undefined; name?: StringQueryTypeCasting | undefined; email?: StringQueryTypeCasting | undefined; ... 78 more ...; validateSync?: { ...; } | undefined; }): Promise<...>', gave the following error.
+    Type 'ObjectId | null' is not assignable to type 'ObjectIdQueryTypeCasting | undefined'.
+      Type 'null' is not assignable to type 'ObjectIdQueryTypeCasting | undefined'.
+  Overload 3 of 5, '(...docs: { projectId?: ObjectIdQueryTypeCasting | undefined; name?: StringQueryTypeCasting | undefined; email?: StringQueryTypeCasting | undefined; ... 78 more ...; validateSync?: { ...; } | undefined; }[]): Promise<...>', gave the following error.
+    Type 'ObjectId | null' is not assignable to type 'ObjectIdQueryTypeCasting | undefined'.
+      Type 'null' is not assignable to type 'ObjectIdQueryTypeCasting | undefined'.
+components/ui/chart.tsx(109,3): error TS2339: Property 'payload' does not exist on type 'Omit<Props<ValueType, NameType>, PropertiesReadFromContext> & { active?: boolean | undefined; allowEscapeViewBox?: AllowInDimension | undefined; ... 17 more ...; wrapperStyle?: CSSProperties | undefined; } & ClassAttributes<...> & HTMLAttributes<...> & { ...; }'.
+components/ui/chart.tsx(114,3): error TS2339: Property 'label' does not exist on type 'Omit<Props<ValueType, NameType>, PropertiesReadFromContext> & { active?: boolean | undefined; allowEscapeViewBox?: AllowInDimension | undefined; ... 17 more ...; wrapperStyle?: CSSProperties | undefined; } & ClassAttributes<...> & HTMLAttributes<...> & { ...; }'.
+components/ui/chart.tsx(183,20): error TS7006: Parameter 'item' implicitly has an 'any' type.
+components/ui/chart.tsx(184,17): error TS7006: Parameter 'item' implicitly has an 'any' type.
+components/ui/chart.tsx(184,23): error TS7006: Parameter 'index' implicitly has an 'any' type.
+components/ui/chart.tsx(262,39): error TS2344: Type '"payload" | "verticalAlign"' does not satisfy the constraint '"string" | "path" | "href" | "origin" | "y" | "d" | "min" | "name" | "key" | "id" | "type" | "filter" | "fill" | "values" | "result" | "cursor" | "version" | "max" | "transform" | ... 427 more ... | "onBBoxUpdate"'.
+  Type '"payload"' is not assignable to type '"string" | "path" | "href" | "origin" | "y" | "d" | "min" | "name" | "key" | "id" | "type" | "filter" | "fill" | "values" | "result" | "cursor" | "version" | "max" | "transform" | ... 427 more ... | "onBBoxUpdate"'.
+components/ui/chart.tsx(268,17): error TS2339: Property 'length' does not exist on type '{}'.
+components/ui/chart.tsx(281,10): error TS2339: Property 'filter' does not exist on type '{}'.
+components/ui/chart.tsx(281,18): error TS7006: Parameter 'item' implicitly has an 'any' type.
+components/ui/chart.tsx(282,15): error TS7006: Parameter 'item' implicitly has an 'any' type.
+components/ui/resizable.tsx(12,51): error TS2339: Property 'PanelGroup' does not exist on type 'typeof import("C:/Users/Jr/Desktop/waitlist/node_modules/react-resizable-panels/dist/react-resizable-panels")'.
+components/ui/resizable.tsx(14,25): error TS2339: Property 'PanelGroup' does not exist on type 'typeof import("C:/Users/Jr/Desktop/waitlist/node_modules/react-resizable-panels/dist/react-resizable-panels")'.
+components/ui/resizable.tsx(35,51): error TS2339: Property 'PanelResizeHandle' does not exist on type 'typeof import("C:/Users/Jr/Desktop/waitlist/node_modules/react-resizable-panels/dist/react-resizable-panels")'.
+components/ui/resizable.tsx(39,25): error TS2339: Property 'PanelResizeHandle' does not exist on type 'typeof import("C:/Users/Jr/Desktop/waitlist/node_modules/react-resizable-panels/dist/react-resizable-panels")'.
+components/ui/resizable.tsx(52,26): error TS2339: Property 'PanelResizeHandle' does not exist on type 'typeof import("C:/Users/Jr/Desktop/waitlist/node_modules/react-resizable-panels/dist/react-resizable-panels")'.
+lib/email-automation.ts(22,20): error TS2339: Property 'settings' does not exist on type 'Document<unknown, {}, IEmailCampaign, {}, DefaultSchemaOptions> & IEmailCampaign & Required<{ _id: ObjectId; }> & { ...; }'.
+lib/email-automation.ts(50,37): error TS18046: 'error' is of type 'unknown'.
