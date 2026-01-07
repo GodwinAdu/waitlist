@@ -1,7 +1,20 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
-import { Share2, MessageCircle, Facebook, Linkedin, Send, Mail } from "lucide-react"
+import {
+  FacebookShareButton,
+  TwitterShareButton,
+  LinkedinShareButton,
+  WhatsappShareButton,
+  TelegramShareButton,
+  EmailShareButton,
+  FacebookIcon,
+  TwitterIcon,
+  LinkedinIcon,
+  WhatsappIcon,
+  TelegramIcon,
+  EmailIcon
+} from 'react-share'
+import { Share2 } from 'lucide-react'
 
 interface SocialShareProps {
   shareUrl: string
@@ -11,71 +24,76 @@ interface SocialShareProps {
 }
 
 export function SocialShare({ shareUrl, shareText, projectName, primaryColor }: SocialShareProps) {
-  const platforms = [
-    {
-      name: "Twitter",
-      icon: Share2,
-      url: `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`,
-      color: "#1DA1F2"
-    },
-    {
-      name: "WhatsApp", 
-      icon: MessageCircle,
-      url: `https://wa.me/?text=${encodeURIComponent(`${shareText} ${shareUrl}`)}`,
-      color: "#25D366"
-    },
-    {
-      name: "Facebook",
-      icon: Facebook, 
-      url: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent(shareText)}`,
-      color: "#1877F2"
-    },
-    {
-      name: "LinkedIn",
-      icon: Linkedin,
-      url: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`,
-      color: "#0A66C2"
-    },
-    {
-      name: "Telegram",
-      icon: Send,
-      url: `https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareText)}`,
-      color: "#0088CC"
-    },
-    {
-      name: "Email",
-      icon: Mail,
-      url: `mailto:?subject=${encodeURIComponent(`Join ${projectName} Waitlist`)}&body=${encodeURIComponent(`${shareText} ${shareUrl}`)}`,
-      color: "#EA4335"
-    }
-  ]
+  const iconSize = 44
+  const iconProps = {
+    size: iconSize,
+    round: true
+  }
+
+  // Create catchy share messages for different platforms
+  const catchyMessage = `🚀 Just joined the ${projectName} waitlist! Be part of something amazing - secure your spot now! 🎯`
+  const emailSubject = `🔥 Don't miss out on ${projectName}!`
+  const emailBody = `Hey! I just secured my spot on the ${projectName} waitlist and thought you'd love this too! \n\n${shareText}\n\nJoin me here: ${shareUrl}\n\nLimited spots available - don't wait! 🚀`
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3">
-      {platforms.map((platform) => {
-        const Icon = platform.icon
-        return (
-          <Button
-            key={platform.name}
-            asChild
-            variant="outline"
-            className="bg-transparent hover:bg-white/10 border-white/20 text-white hover:text-white transition-all duration-300 group"
+    <div className="space-y-4">
+      <div className="text-center">
+        <div className="flex items-center justify-center gap-2 mb-3">
+          <Share2 className="h-5 w-5 text-white/80" />
+          <h3 className="text-lg font-semibold text-white">Spread the Word</h3>
+        </div>
+        <p className="text-white/70 text-sm mb-4">
+          Help your friends discover {projectName} and earn rewards for every referral!
+        </p>
+      </div>
+      
+      <div className="grid grid-cols-3 sm:grid-cols-6 gap-4 justify-items-center">
+        <div className="group cursor-pointer">
+          <TwitterShareButton url={shareUrl} title={catchyMessage}>
+            <TwitterIcon {...iconProps} className="transition-transform group-hover:scale-110" />
+          </TwitterShareButton>
+        </div>
+        
+        <div className="group cursor-pointer">
+          <FacebookShareButton url={shareUrl} hashtag={`#${projectName.replace(/\s+/g, '')}`}>
+            <FacebookIcon {...iconProps} className="transition-transform group-hover:scale-110" />
+          </FacebookShareButton>
+        </div>
+        
+        <div className="group cursor-pointer">
+          <LinkedinShareButton url={shareUrl} title={catchyMessage}>
+            <LinkedinIcon {...iconProps} className="transition-transform group-hover:scale-110" />
+          </LinkedinShareButton>
+        </div>
+        
+        <div className="group cursor-pointer">
+          <WhatsappShareButton url={shareUrl} title={catchyMessage}>
+            <WhatsappIcon {...iconProps} className="transition-transform group-hover:scale-110" />
+          </WhatsappShareButton>
+        </div>
+        
+        <div className="group cursor-pointer">
+          <TelegramShareButton url={shareUrl} title={catchyMessage}>
+            <TelegramIcon {...iconProps} className="transition-transform group-hover:scale-110" />
+          </TelegramShareButton>
+        </div>
+        
+        <div className="group cursor-pointer">
+          <EmailShareButton
+            url={shareUrl}
+            subject={emailSubject}
+            body={emailBody}
           >
-            <a
-              href={platform.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 justify-center"
-            >
-              <Icon 
-                className="h-4 w-4 transition-colors duration-300" 
-                style={{ color: platform.color }}
-              />
-              <span className="text-xs sm:text-sm">{platform.name}</span>
-            </a>
-          </Button>
-        )
-      })}
+            <EmailIcon {...iconProps} className="transition-transform group-hover:scale-110" />
+          </EmailShareButton>
+        </div>
+      </div>
+      
+      <div className="text-center">
+        <p className="text-white/60 text-xs">
+          💡 Tip: Share with friends to climb the leaderboard and unlock exclusive rewards!
+        </p>
+      </div>
     </div>
   )
 }
