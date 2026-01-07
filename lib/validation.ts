@@ -1,5 +1,3 @@
-import DOMPurify from 'isomorphic-dompurify'
-
 export const validators = {
   email: (email: string): boolean => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -34,7 +32,19 @@ export const validators = {
 }
 
 export function sanitizeInput(input: string): string {
-  return DOMPurify.sanitize(input.trim())
+  // Basic XSS protection without DOMPurify
+  return input
+    .trim()
+    .replace(/[<>"'&]/g, (match) => {
+      const entities: Record<string, string> = {
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#x27;',
+        '&': '&amp;'
+      }
+      return entities[match] || match
+    })
 }
 
 export function validateRequired(fields: Record<string, any>): string[] {
