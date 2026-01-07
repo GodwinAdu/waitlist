@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import Link from "next/link"
 import { AchievementBadges } from "@/components/gamification/achievement-badget"
 import { CopyButton } from "@/components/copy-button"
+import { SocialShare } from "@/components/social-share"
 
 const TIER_COLORS = {
   bronze: "#cd7f32",
@@ -143,17 +144,19 @@ export default function SuccessPage({ params, searchParams }: SuccessPageProps) 
                   <p className="break-all text-center text-sm font-mono">{shareUrl}</p>
                 </div>
 
-                <div className="flex flex-col gap-2 sm:flex-row">
+                <div className="space-y-3">
                   <CopyButton shareUrl={shareUrl} primaryColor={project.primaryColor} />
-                  <Button asChild variant="outline" className="flex-1 bg-transparent">
-                    <a
-                      href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      Share on Twitter
-                    </a>
-                  </Button>
+                  
+                  <div className="text-center text-sm text-muted-foreground mb-2">
+                    Share on social platforms:
+                  </div>
+                  
+                  <SocialShare 
+                    shareUrl={shareUrl}
+                    shareText={shareText}
+                    projectName={project.name}
+                    primaryColor={project.primaryColor}
+                  />
                 </div>
 
                 <div className="mt-4 space-y-2 text-center text-xs text-muted-foreground">

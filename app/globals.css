@@ -179,7 +179,7 @@
     @apply text-base sm:text-sm; /* Prevent zoom on iOS */
   }
   .mobile-safe {
-    @apply pb-safe-bottom;
+    @apply pb-4 sm:pb-6;
   }
   .touch-friendly {
     @apply min-h-[44px] min-w-[44px]; /* Apple's recommended touch target */
