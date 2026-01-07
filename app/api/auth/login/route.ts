@@ -2,20 +2,31 @@ import { NextResponse } from "next/server"
 import { connectToDB } from "@/lib/mongoose"
 import Admin from "@/models/Admin"
 import { comparePassword, generateToken } from "@/lib/auth"
+import { rateLimit } from "@/lib/rate-limit"
+import { validateRequired, validateEmail, sanitizeInput } from "@/lib/validation"
+
+const loginRateLimit = rateLimit({ windowMs: 15 * 60 * 1000, maxRequests: 5 })
 
 export async function POST(request: Request) {
   try {
-    const { username, password } = await request.json()
+    // Apply rate limiting
+    const rateLimitResponse = await loginRateLimit(request as any)
+    if (rateLimitResponse) return rateLimitResponse
+
+    const body = await request.json()
+    const username = sanitizeInput(body.username || '')
+    const password = body.password || ''
 
     // Validation
-    if (!username || !password) {
-      return NextResponse.json({ error: "Username and password are required" }, { status: 400 })
+    const requiredErrors = validateRequired({ username, password })
+    if (requiredErrors.length > 0) {
+      return NextResponse.json({ error: requiredErrors[0] }, { status: 400 })
     }
 
     await connectToDB()
 
     // Find admin
-    const admin = await Admin.findOne({ username })
+    const admin = await Admin.findOne({ username }).select('+password')
 
     if (!admin) {
       return NextResponse.json({ error: "Invalid credentials" }, { status: 401 })
@@ -57,6 +68,6 @@ export async function POST(request: Request) {
     return response
   } catch (error: any) {
     console.error("Login error:", error)
-    return NextResponse.json({ error: "Login failed" }, { status: 500 })
+    return NextResponse.json({ error: "Authentication failed" }, { status: 500 })
   }
 }

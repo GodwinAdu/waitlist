@@ -6,7 +6,10 @@
     "dev": "next dev --inspect",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "setup": "node scripts/setup.js",
+    "db:indexes": "node -e \"require('./lib/db-setup').createIndexes()\"",
+    "backup": "node scripts/backup.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
@@ -45,6 +48,7 @@
     "date-fns": "^4.1.0",
     "embla-carousel-react": "^8.6.0",
     "input-otp": "^1.4.2",
+    "isomorphic-dompurify": "^2.35.0",
     "jsonwebtoken": "^9.0.3",
     "lucide-react": "^0.562.0",
     "mongoose": "^9.0.2",

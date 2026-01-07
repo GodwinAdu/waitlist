@@ -18,40 +18,35 @@ export default function PaymentVerifyClient() {
   const [status, setStatus] = useState<"loading" | "success" | "error">("loading");
   const [message, setMessage] = useState("");
 
-  useEffect(() => {
-    const reference = searchParams.get("reference");
-
-    if (!reference) {
-      setStatus("error");
-      setMessage("Invalid payment reference");
-      return;
-    }
-
-    async function verifyPayment() {
-      try {
-        const response = await fetch("/api/payment/verify", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ reference }),
-        });
-
-        const data = await response.json();
-
-        if (response.ok) {
-          setStatus("success");
-          setMessage("Payment successful! Your subscription has been activated.");
-        } else {
-          setStatus("error");
-          setMessage(data.error || "Payment verification failed");
-        }
-      } catch {
-        setStatus("error");
-        setMessage("An error occurred while verifying payment");
-      }
-    }
-
-    verifyPayment();
-  }, [searchParams]);
+   useEffect(() => {
+     const reference = searchParams.get("reference")
+ 
+     if (!reference) {
+       setStatus("error")
+       setMessage("Invalid payment reference")
+       return
+     }
+ 
+     async function verifyPayment() {
+       try {
+         const response = await fetch("/api/subscription/verify?reference=" + reference)
+         const data = await response.json()
+ 
+         if (response.ok) {
+           setStatus("success")
+           setMessage("Payment successful! Your subscription has been activated.")
+         } else {
+           setStatus("error")
+           setMessage(data.error || "Payment verification failed")
+         }
+       } catch (error) {
+         setStatus("error")
+         setMessage("An error occurred while verifying payment")
+       }
+     }
+ 
+     verifyPayment()
+   }, [searchParams])
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-muted p-4">

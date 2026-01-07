@@ -1,6 +1,7 @@
 import nodemailer from "nodemailer"
 import Project from "@/models/Project"
 import { connectToDB } from "@/lib/mongoose"
+import { decrypt } from "@/lib/encryption"
 
 interface EmailOptions {
   to: string
@@ -24,7 +25,7 @@ export async function sendEmail({ to, subject, html, projectId }: EmailOptions) 
           secure: project.emailSettings.smtpPort === 465,
           auth: {
             user: project.emailSettings.smtpUser,
-            pass: project.emailSettings.smtpPassword,
+            pass: project.emailSettings.smtpPassword ? decrypt(project.emailSettings.smtpPassword) : '',
           },
         })
         

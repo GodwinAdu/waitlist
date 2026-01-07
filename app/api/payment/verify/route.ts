@@ -1,49 +1,67 @@
 import { NextResponse } from "next/server"
+import Admin from "@/models/Admin"
+import { requireAuth } from "@/lib/auth"
 import { connectToDB } from "@/lib/mongoose"
-import WaitlistUser from "@/models/WaitlistUser"
-import { verifyPaystackPayment } from "@/lib/paystack"
 
 export async function POST(request: Request) {
   try {
+    const user = await requireAuth()
     const { reference } = await request.json()
 
     if (!reference) {
-      return NextResponse.json({ error: "Missing payment reference" }, { status: 400 })
+      return NextResponse.json({ error: "Payment reference is required" }, { status: 400 })
     }
 
-    const verification = await verifyPaystackPayment(reference)
+    // Verify payment with Paystack
+    const paystackResponse = await fetch(`https://api.paystack.co/transaction/verify/${reference}`, {
+      headers: {
+        Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
+      },
+    })
 
-    if (!verification.status || verification.data.status !== "success") {
+    const paystackData = await paystackResponse.json()
+
+    if (!paystackData.status || paystackData.data.status !== "success") {
       return NextResponse.json({ error: "Payment verification failed" }, { status: 400 })
     }
 
     await connectToDB()
 
-    const { userId, tierName } = verification.data.metadata
+    const tier = paystackData.data.metadata.tier
+    const amount = paystackData.data.amount / 100 // Convert from kobo to cedis
 
-    const user = await WaitlistUser.findById(userId)
-    if (!user) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 })
-    }
+    // Update admin subscription
+    const now = new Date()
+    const endDate = new Date()
+    endDate.setMonth(endDate.getMonth() + 1) // 1 month subscription
 
-    user.isPaid = true
-    user.subscriptionTier = tierName
-    user.paystackReference = reference
-    user.paymentVerifiedAt = new Date()
-    await user.save()
+    await Admin.findByIdAndUpdate(user.userId, {
+      subscriptionTier: tier,
+      subscriptionStatus: "active",
+      subscriptionReference: reference,
+      subscriptionStartDate: now,
+      subscriptionEndDate: endDate,
+      $push: {
+        paymentHistory: {
+          reference,
+          amount,
+          currency: "GHS",
+          status: "success",
+          paidAt: now,
+        },
+      },
+    })
 
     return NextResponse.json({
       success: true,
-      message: "Payment verified successfully",
-      user: {
-        id: user._id,
-        email: user.email,
-        subscriptionTier: user.subscriptionTier,
-        isPaid: user.isPaid,
-      },
+      tier,
+      message: "Subscription activated successfully",
     })
-  } catch (error) {
-    console.error("[v0] Payment verification error:", error)
+  } catch (error: any) {
+    if (error.message === "Unauthorized") {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    }
+    console.error("Verify payment error:", error)
     return NextResponse.json({ error: "Failed to verify payment" }, { status: 500 })
   }
 }

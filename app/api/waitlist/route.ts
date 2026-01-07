@@ -8,12 +8,25 @@ import { canAddWaitlistUser } from "@/lib/subscription"
 import { connectToDB } from "@/lib/mongoose"
 import { triggerWebhooks } from "@/lib/webhooks"
 import { scheduleWelcomeEmail } from "@/lib/email-automation"
+import { rateLimit } from "@/lib/rate-limit"
+import { validateRequired, validateEmail, validators, sanitizeInput } from "@/lib/validation"
+
+const waitlistRateLimit = rateLimit({ windowMs: 5 * 60 * 1000, maxRequests: 3 })
 
 // Join waitlist
 export async function POST(request: Request) {
   try {
+    // Apply rate limiting
+    const rateLimitResponse = await waitlistRateLimit(request as any)
+    if (rateLimitResponse) return rateLimitResponse
+
     const body = await request.json()
-    const { projectId, name, email, phone, role, message, referralCode } = body
+    const { projectId, referralCode } = body
+    const name = sanitizeInput(body.name || '')
+    const email = sanitizeInput(body.email || '').toLowerCase()
+    const phone = sanitizeInput(body.phone || '')
+    const role = sanitizeInput(body.role || '')
+    const message = sanitizeInput(body.message || '')
 
     // Get analytics data from headers
     const userAgent = request.headers.get('user-agent') || ''
@@ -51,8 +64,22 @@ export async function POST(request: Request) {
     }
 
     // Validation
-    if (!projectId || !name || !email) {
-      return NextResponse.json({ error: "Project ID, name, and email are required" }, { status: 400 })
+    const requiredErrors = validateRequired({ projectId, name, email })
+    if (requiredErrors.length > 0) {
+      return NextResponse.json({ error: requiredErrors[0] }, { status: 400 })
+    }
+
+    const emailErrors = validateEmail(email)
+    if (emailErrors.length > 0) {
+      return NextResponse.json({ error: emailErrors[0] }, { status: 400 })
+    }
+
+    if (phone && !validators.phone(phone)) {
+      return NextResponse.json({ error: "Invalid phone number format" }, { status: 400 })
+    }
+
+    if (name.length < 2 || name.length > 50) {
+      return NextResponse.json({ error: "Name must be 2-50 characters" }, { status: 400 })
     }
 
     await connectToDB()

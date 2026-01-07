@@ -1,0 +1,45 @@
+# Vercel (using Vercel Cron)
+# vercel.json
+{
+  "functions": {
+    "app/api/cron/backup.js": {
+      "maxDuration": 300
+    }
+  },
+  "crons": [
+    {
+      "path": "/api/cron/backup",
+      "schedule": "0 2 * * *"
+    }
+  ]
+}
+
+# Railway (using railway.json)
+{
+  "build": {
+    "builder": "NIXPACKS"
+  },
+  "deploy": {
+    "startCommand": "npm start & npm run backup schedule 24"
+  }
+}
+
+# Render (using render.yaml)
+services:
+  - type: web
+    name: waitlist-app
+    env: node
+    buildCommand: npm install
+    startCommand: npm start
+  
+  - type: cron
+    name: backup-job
+    env: node
+    buildCommand: npm install
+    startCommand: npm run backup create
+    schedule: "0 2 * * *"
+
+# Heroku (using Heroku Scheduler add-on)
+# Add this to your Heroku app:
+# heroku addons:create scheduler:standard
+# Then add scheduled job: npm run backup create

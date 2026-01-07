@@ -27,6 +27,9 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     const search = searchParams.get("search") || ""
     const role = searchParams.get("role") || ""
     const notified = searchParams.get("notified")
+    const page = parseInt(searchParams.get("page") || "1")
+    const limit = parseInt(searchParams.get("limit") || "50")
+    const skip = (page - 1) * limit
 
     // Build query
     const query: any = { projectId: id }
@@ -45,9 +48,20 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
       query.isNotified = false
     }
 
-    const users = await WaitlistUser.find(query).sort({ position: 1 })
+    const [users, total] = await Promise.all([
+      WaitlistUser.find(query).sort({ position: 1 }).skip(skip).limit(limit),
+      WaitlistUser.countDocuments(query)
+    ])
 
-    return NextResponse.json({ users })
+    return NextResponse.json({ 
+      users, 
+      pagination: {
+        page,
+        limit,
+        total,
+        pages: Math.ceil(total / limit)
+      }
+    })
   } catch (error: any) {
     if (error.message === "Unauthorized") {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
