@@ -122,6 +122,9 @@
   body {
     @apply bg-background text-foreground;
   }
+  html {
+    @apply scroll-smooth;
+  }
 }
 
 @layer utilities {
@@ -152,4 +155,51 @@
   .delay-500 { animation-delay: 500ms; }
   .delay-1000 { animation-delay: 1000ms; }
   .delay-2000 { animation-delay: 2000ms; }
+  
+  /* Mobile-first responsive utilities */
+  .mobile-container {
+    @apply px-4 sm:px-6 lg:px-8;
+  }
+  .mobile-grid {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6;
+  }
+  .mobile-text {
+    @apply text-sm sm:text-base;
+  }
+  .mobile-heading {
+    @apply text-xl sm:text-2xl lg:text-3xl;
+  }
+  .mobile-card {
+    @apply p-4 sm:p-6;
+  }
+  .mobile-button {
+    @apply px-4 py-2 sm:px-6 sm:py-3 text-sm sm:text-base;
+  }
+  .mobile-input {
+    @apply text-base sm:text-sm; /* Prevent zoom on iOS */
+  }
+  .mobile-safe {
+    @apply pb-safe-bottom;
+  }
+  .touch-friendly {
+    @apply min-h-[44px] min-w-[44px]; /* Apple's recommended touch target */
+  }
+}
+
+/* Mobile-specific fixes */
+@media (max-width: 640px) {
+  .mobile-scroll {
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Fix viewport issues on mobile */
+  .mobile-viewport {
+    min-height: 100vh;
+    min-height: 100dvh; /* Dynamic viewport height */
+  }
+  
+  /* Improve touch targets */
+  button, [role="button"], input, select, textarea {
+    @apply touch-friendly;
+  }
 }
