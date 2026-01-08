@@ -54,12 +54,12 @@ export default function MediaGallery({ images, videos, projectName }: MediaGalle
     <>
       <div className="relative">
         {/* Main Media Display */}
-        <div className="relative rounded-xl overflow-hidden bg-black/20 border border-white/10">
+        <div className="relative rounded-lg sm:rounded-xl overflow-hidden bg-black/20 border border-white/10">
           {currentMedia.type === 'image' ? (
             <img 
               src={currentMedia.url} 
               alt={`${projectName} media ${currentIndex + 1}`}
-              className="w-full h-auto object-contain"
+              className="w-full h-auto max-h-[250px] sm:max-h-[350px] lg:max-h-[450px] object-contain"
               onError={(e) => {
                 const target = e.target as HTMLImageElement
                 target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIwIiBoZWlnaHQ9IjE4MCIgdmlld0JveD0iMCAwIDMyMCAxODAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIzMjAiIGhlaWdodD0iMTgwIiBmaWxsPSIjMzc0MTUxIi8+CjxwYXRoIGQ9Ik0xNjAgMTIwQzE3Ny42NzMgMTIwIDE5MiAxMDUuNjczIDE5MiA4OEMxOTIgNzAuMzI3MyAxNzcuNjczIDU2IDE2MCA1NkMxNDIuMzI3IDU2IDEyOCA3MC4zMjczIDEyOCA4OEMxMjggMTA1LjY3MyAxNDIuMzI3IDEyMCAxNjAgMTIwWiIgc3Ryb2tlPSIjOUNBM0FGIiBzdHJva2Utd2lkdGg9IjIiLz4KPC9zdmc+Cg=='
@@ -79,7 +79,7 @@ export default function MediaGallery({ images, videos, projectName }: MediaGalle
               ) : (
                 <video 
                   src={currentMedia.url}
-                  className="w-full h-auto"
+                  className="w-full h-auto max-h-[250px] sm:max-h-[350px] lg:max-h-[450px]"
                   controls
                   preload="metadata"
                 />

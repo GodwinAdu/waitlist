@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent } from "@/components/ui/card"
 import { AchievementBadges } from "../gamification/achievement-badget"
-import { toast } from "@/components/ui/toast"
+import { SocialShare } from "@/components/social-share"
 
 
 interface WaitlistFormProps {
@@ -105,43 +105,27 @@ export function WaitlistForm({ projectId, primaryColor, projectName, projectDesc
           <div className="mx-auto max-w-md space-y-4">
             <div className="rounded-lg bg-muted p-4">
               <p className="mb-2 text-sm font-medium">Share with friends to earn more points and climb the tiers:</p>
-              <div className="flex gap-2 mb-2">
+              <div className="flex gap-2 mb-4">
                 <Input value={referralLink} readOnly className="text-xs" />
                 <Button
                   size="sm"
                   onClick={() => {
                     navigator.clipboard.writeText(referralLink)
-                    toast.success('Link copied to clipboard!')
+                    // toast.success('Link copied to clipboard!')
                   }}
                 >
                   Copy
                 </Button>
               </div>
-              <div className="flex gap-2">
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => {
-                    const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareMessage)}`
-                    window.open(twitterUrl, '_blank')
-                  }}
-                  className="flex-1"
-                >
-                  Share on Twitter
-                </Button>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => {
-                    navigator.clipboard.writeText(shareMessage)
-                    toast.success('Share message copied!')
-                  }}
-                  className="flex-1"
-                >
-                  Copy Message
-                </Button>
-              </div>
-              <p className="mt-2 text-xs text-muted-foreground">Earn 50 points for each referral!</p>
+              
+              <SocialShare 
+                shareUrl={referralLink}
+                shareText={shareMessage}
+                projectName={projectName || 'this project'}
+                primaryColor={primaryColor || '#8b5cf6'}
+              />
+              
+              <p className="mt-4 text-xs text-muted-foreground text-center">Earn 50 points for each referral!</p>
             </div>
 
             <div className="text-left text-sm text-muted-foreground">

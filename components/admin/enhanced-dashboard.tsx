@@ -53,21 +53,21 @@ export default function EnhancedDashboard({ projectId }: EnhancedDashboardProps)
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-950">
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-500/20 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-pink-500/20 rounded-full blur-3xl animate-pulse delay-1000" />
+        <div className="absolute -top-20 -right-20 sm:-top-40 sm:-right-40 w-40 h-40 sm:w-80 sm:h-80 bg-purple-500/20 rounded-full blur-2xl sm:blur-3xl animate-pulse" />
+        <div className="absolute -bottom-20 -left-20 sm:-bottom-40 sm:-left-40 w-40 h-40 sm:w-80 sm:h-80 bg-pink-500/20 rounded-full blur-2xl sm:blur-3xl animate-pulse delay-1000" />
       </div>
 
       <div className="relative">
         <header className="border-b border-white/10 bg-black/20 backdrop-blur-xl">
-          <div className="mx-auto max-w-7xl px-4 py-6">
-            <div className="flex items-center justify-between">
+          <div className="mx-auto max-w-7xl px-3 py-4 sm:px-6 sm:py-6">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
               <div>
-                <h1 className="text-3xl font-bold bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">
+                <h1 className="text-xl sm:text-3xl font-bold bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">
                   Enhanced Dashboard
                 </h1>
-                <p className="text-gray-300 mt-2">Comprehensive analytics and management tools</p>
+                <p className="text-gray-300 mt-1 sm:mt-2 text-sm sm:text-base">Comprehensive analytics and management tools</p>
               </div>
-              <Button asChild variant="outline" className="border-white/20 text-white hover:bg-white/10">
+              <Button asChild variant="outline" className="border-white/20 text-white hover:bg-white/10 text-sm w-full sm:w-auto">
                 <Link href="/admin">
                   ← Back to Dashboard
                 </Link>
@@ -76,54 +76,70 @@ export default function EnhancedDashboard({ projectId }: EnhancedDashboardProps)
           </div>
         </header>
 
-        <main className="mx-auto max-w-7xl px-4 py-8">
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-            <TabsList className="grid w-full grid-cols-4 lg:grid-cols-11 bg-black/20 backdrop-blur-sm border border-white/10">
+        <main className="mx-auto max-w-7xl px-2 py-4 sm:px-6 sm:py-8">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4 sm:space-y-6">
+            {/* Mobile Dropdown */}
+            <div className="sm:hidden">
+              <select 
+                value={activeTab} 
+                onChange={(e) => setActiveTab(e.target.value)}
+                className="w-full p-3 rounded-lg bg-black/20 border border-white/10 text-white text-sm"
+              >
+                {tabs.map((tab) => (
+                  <option key={tab.id} value={tab.id}>
+                    {tab.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Desktop Tabs */}
+            <TabsList className="hidden sm:grid w-full grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-11 bg-black/20 backdrop-blur-sm border border-white/10 gap-1">
               {tabs.map((tab) => (
                 <TabsTrigger 
                   key={tab.id} 
                   value={tab.id}
-                  className="flex items-center gap-2 data-[state=active]:bg-purple-600 data-[state=active]:text-white"
+                  className="flex items-center gap-1 sm:gap-2 data-[state=active]:bg-purple-600 data-[state=active]:text-white text-xs sm:text-sm p-2 sm:p-3"
                 >
-                  <tab.icon className="h-4 w-4" />
-                  <span className="hidden sm:inline">{tab.label}</span>
+                  <tab.icon className="h-3 w-3 sm:h-4 sm:w-4" />
+                  <span className="hidden md:inline truncate">{tab.label}</span>
                 </TabsTrigger>
               ))}
             </TabsList>
 
-            <TabsContent value="analytics" className="space-y-6">
+            <TabsContent value="analytics" className="space-y-4 sm:space-y-6">
               <AdvancedAnalytics projectId={projectId || 'demo'} />
             </TabsContent>
 
-            <TabsContent value="ab-testing" className="space-y-6">
+            <TabsContent value="ab-testing" className="space-y-4 sm:space-y-6">
               <ABAnalytics projectId={projectId || 'demo'} />
             </TabsContent>
 
-            <TabsContent value="ai-content" className="space-y-6">
+            <TabsContent value="ai-content" className="space-y-4 sm:space-y-6">
               <AIContentGenerator projectId={projectId || 'demo'} />
             </TabsContent>
 
-            <TabsContent value="heatmaps" className="space-y-6">
+            <TabsContent value="heatmaps" className="space-y-4 sm:space-y-6">
               <HeatmapVisualization projectId={projectId || 'demo'} />
             </TabsContent>
 
-            <TabsContent value="campaigns" className="space-y-6">
+            <TabsContent value="campaigns" className="space-y-4 sm:space-y-6">
               {projectId && projectId !== 'demo' ? (
                 <EmailCampaigns projectId={projectId} />
               ) : (
-                <div className="text-center py-8 text-gray-400">
-                  <p>Please select a specific project to manage email campaigns.</p>
-                  <p className="text-sm mt-2">Navigate to /admin/enhanced/[projectId] with a real project ID.</p>
+                <div className="text-center py-6 sm:py-8 text-gray-400 px-4">
+                  <p className="text-sm sm:text-base">Please select a specific project to manage email campaigns.</p>
+                  <p className="text-xs sm:text-sm mt-2">Navigate to /admin/enhanced/[projectId] with a real project ID.</p>
                 </div>
               )}
             </TabsContent>
 
-            <TabsContent value="integrations" className="space-y-6">
+            <TabsContent value="integrations" className="space-y-4 sm:space-y-6">
               <IntegrationsManager />
             </TabsContent>
 
-            <TabsContent value="templates" className="space-y-6">
-              <div className="mb-4">
+            <TabsContent value="templates" className="space-y-4 sm:space-y-6">
+              <div className="mb-3 sm:mb-4">
                 <button 
                   onClick={async () => {
                     try {
@@ -136,7 +152,7 @@ export default function EnhancedDashboard({ projectId }: EnhancedDashboardProps)
                       console.error('Seeding failed:', error)
                     }
                   }}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm"
+                  className="w-full sm:w-auto px-3 py-2 sm:px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-xs sm:text-sm"
                 >
                   Load Sample Templates
                 </button>
@@ -144,85 +160,85 @@ export default function EnhancedDashboard({ projectId }: EnhancedDashboardProps)
               <TemplateMarketplace />
             </TabsContent>
 
-            <TabsContent value="team" className="space-y-6">
+            <TabsContent value="team" className="space-y-4 sm:space-y-6">
               <TeamManagement />
             </TabsContent>
 
-            <TabsContent value="webhooks" className="space-y-6">
+            <TabsContent value="webhooks" className="space-y-4 sm:space-y-6">
               <WebhookManagement />
             </TabsContent>
 
-            <TabsContent value="seo" className="space-y-6">
+            <TabsContent value="seo" className="space-y-4 sm:space-y-6">
               <Card className="border-white/10 bg-black/20 backdrop-blur-sm">
-                <CardHeader>
-                  <CardTitle className="text-white flex items-center gap-2">
-                    <Globe className="h-5 w-5" />
+                <CardHeader className="p-4 sm:p-6">
+                  <CardTitle className="text-white flex items-center gap-2 text-lg sm:text-xl">
+                    <Globe className="h-4 w-4 sm:h-5 sm:w-5" />
                     SEO Tools
                   </CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <div className="grid gap-4 md:grid-cols-2">
+                <CardContent className="p-4 sm:p-6">
+                  <div className="grid gap-3 sm:gap-4 md:grid-cols-2">
                     <div className="space-y-2">
-                      <h3 className="text-white font-semibold">Meta Tags</h3>
-                      <p className="text-gray-300 text-sm">Optimize your page titles and descriptions</p>
+                      <h3 className="text-white font-semibold text-sm sm:text-base">Meta Tags</h3>
+                      <p className="text-gray-300 text-xs sm:text-sm">Optimize your page titles and descriptions</p>
                     </div>
                     <div className="space-y-2">
-                      <h3 className="text-white font-semibold">Schema Markup</h3>
-                      <p className="text-gray-300 text-sm">Structured data for better search visibility</p>
+                      <h3 className="text-white font-semibold text-sm sm:text-base">Schema Markup</h3>
+                      <p className="text-gray-300 text-xs sm:text-sm">Structured data for better search visibility</p>
                     </div>
                     <div className="space-y-2">
-                      <h3 className="text-white font-semibold">Sitemap Generation</h3>
-                      <p className="text-gray-300 text-sm">Automatic XML sitemap creation</p>
+                      <h3 className="text-white font-semibold text-sm sm:text-base">Sitemap Generation</h3>
+                      <p className="text-gray-300 text-xs sm:text-sm">Automatic XML sitemap creation</p>
                     </div>
                     <div className="space-y-2">
-                      <h3 className="text-white font-semibold">Performance Monitoring</h3>
-                      <p className="text-gray-300 text-sm">Core Web Vitals tracking</p>
+                      <h3 className="text-white font-semibold text-sm sm:text-base">Performance Monitoring</h3>
+                      <p className="text-gray-300 text-xs sm:text-sm">Core Web Vitals tracking</p>
                     </div>
                   </div>
                 </CardContent>
               </Card>
             </TabsContent>
 
-            <TabsContent value="enterprise" className="space-y-6">
+            <TabsContent value="enterprise" className="space-y-4 sm:space-y-6">
               <Card className="border-white/10 bg-black/20 backdrop-blur-sm">
-                <CardHeader>
-                  <CardTitle className="text-white flex items-center gap-2">
-                    <Crown className="h-5 w-5 text-yellow-400" />
+                <CardHeader className="p-4 sm:p-6">
+                  <CardTitle className="text-white flex items-center gap-2 text-lg sm:text-xl">
+                    <Crown className="h-4 w-4 sm:h-5 sm:w-5 text-yellow-400" />
                     Enterprise Features
                   </CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <div className="grid gap-6 md:grid-cols-2">
-                    <div className="space-y-4">
-                      <h3 className="text-white font-semibold">White-label Solution</h3>
-                      <ul className="space-y-2 text-gray-300 text-sm">
+                <CardContent className="p-4 sm:p-6">
+                  <div className="grid gap-4 sm:gap-6 md:grid-cols-2">
+                    <div className="space-y-3 sm:space-y-4">
+                      <h3 className="text-white font-semibold text-sm sm:text-base">White-label Solution</h3>
+                      <ul className="space-y-1 sm:space-y-2 text-gray-300 text-xs sm:text-sm">
                         <li>• Custom domain mapping</li>
                         <li>• Remove branding</li>
                         <li>• Custom favicon</li>
                         <li>• Brand customization</li>
                       </ul>
                     </div>
-                    <div className="space-y-4">
-                      <h3 className="text-white font-semibold">API Access</h3>
-                      <ul className="space-y-2 text-gray-300 text-sm">
+                    <div className="space-y-3 sm:space-y-4">
+                      <h3 className="text-white font-semibold text-sm sm:text-base">API Access</h3>
+                      <ul className="space-y-1 sm:space-y-2 text-gray-300 text-xs sm:text-sm">
                         <li>• RESTful API endpoints</li>
                         <li>• Webhook integrations</li>
                         <li>• Real-time data sync</li>
                         <li>• Custom integrations</li>
                       </ul>
                     </div>
-                    <div className="space-y-4">
-                      <h3 className="text-white font-semibold">Advanced Security</h3>
-                      <ul className="space-y-2 text-gray-300 text-sm">
+                    <div className="space-y-3 sm:space-y-4">
+                      <h3 className="text-white font-semibold text-sm sm:text-base">Advanced Security</h3>
+                      <ul className="space-y-1 sm:space-y-2 text-gray-300 text-xs sm:text-sm">
                         <li>• Two-factor authentication</li>
                         <li>• Audit logs</li>
                         <li>• GDPR compliance</li>
                         <li>• Data encryption</li>
                       </ul>
                     </div>
-                    <div className="space-y-4">
-                      <h3 className="text-white font-semibold">Premium Support</h3>
-                      <ul className="space-y-2 text-gray-300 text-sm">
+                    <div className="space-y-3 sm:space-y-4">
+                      <h3 className="text-white font-semibold text-sm sm:text-base">Premium Support</h3>
+                      <ul className="space-y-1 sm:space-y-2 text-gray-300 text-xs sm:text-sm">
                         <li>• Dedicated support team</li>
                         <li>• Priority response</li>
                         <li>• Custom development</li>

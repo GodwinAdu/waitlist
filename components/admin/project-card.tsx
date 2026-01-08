@@ -6,6 +6,7 @@ import { Eye, Edit, Trash2, Users, ExternalLink, Share, Copy, Sparkles, Settings
 import Link from "next/link"
 import type { IProject } from "@/models/Project"
 import { toast } from "@/components/ui/toast"
+import { SocialShare } from "../social-share"
 
 interface ProjectCardProps {
   project: IProject & { _id: string }
@@ -58,15 +59,24 @@ export function ProjectCard({ project, onDelete }: ProjectCardProps) {
               <Copy className="mr-1 h-3 w-3" />
               Copy Link
             </Button>
-            <Button 
+            <div className="flex-1">
+              <SocialShare 
+                shareUrl={projectUrl}
+                shareText={shareMessage}
+                projectName={project.name}
+                primaryColor={project.primaryColor || "#8b5cf6"}
+                compact={true}
+              />
+            </div>
+            {/* <Button 
               size="sm" 
               variant="outline" 
               onClick={shareProject}
               className="flex-1 border-purple-500/50 text-purple-200 hover:text-white hover:bg-purple-500/20 text-xs"
             >
               <Share className="mr-1 h-3 w-3" />
-              Share
-            </Button>
+              Twitter
+            </Button> */}
           </div>
         </div>
         

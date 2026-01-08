@@ -134,12 +134,6 @@ export default function AdminDashboard() {
           </div>
           <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
             <VideoTutorialDialog />
-            <Button asChild className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white mobile-button">
-              <Link href="/admin/enhanced">
-                <Sparkles className="mr-2 h-4 w-4" />
-                Enhanced Dashboard
-              </Link>
-            </Button>
             <Button 
               asChild 
               disabled={!!isAtLimit}
